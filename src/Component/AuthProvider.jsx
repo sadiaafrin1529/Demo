@@ -1,8 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { createContext } from 'react';
 import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { app } from './firebase/Firebase';
+import { app,db} from './firebase/Firebase';
+import { collection, getDocs } from "firebase/firestore";
+// Import your Firebase configuration
+import { getFirestore } from 'firebase/firestore';
 export const AuthContext = createContext();
+
+
+
+
+
+
+
+
+
 const AuthProvider = ({children}) => {
 const [user,setUser] = useState('')   
 const [error,setError] = useState('')   
@@ -45,6 +57,29 @@ const logout = ()=>{
     // An error happened.
   });
 }
+
+// async function getAllUsers() {
+//   const usersCollection = collection(db, "users"); // Assuming "users" is the collection name
+//   const querySnapshot = await getDocs(usersCollection);
+
+//   const users = [];
+//   querySnapshot.forEach((doc) => {
+//     // Get data from each user document
+//     const userData = doc.data();
+//     users.push(userData);
+//   });
+
+//   return users;
+// }
+
+// Call the function to get all users
+// getAllUsers()
+//   .then((users) => {
+//     console.log("All Users:", users);
+//   })
+//   .catch((error) => {
+//     console.error("Error fetching users:", error);
+//   });
 
 useEffect(() => {
   setLoading(true)
