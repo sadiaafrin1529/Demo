@@ -1,10 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { createContext } from 'react';
-import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut } from "firebase/auth";
-import { app,db} from './firebase/Firebase';
-import { collection, getDocs } from "firebase/firestore";
+import { createUserWithEmailAndPassword, getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut, updateProfile } from "firebase/auth";
+import { addDoc, collection } from "firebase/firestore";
+import React, { createContext, useEffect, useState } from 'react';
+import { app, db } from './firebase/Firebase';
 // Import your Firebase configuration
-import { getFirestore } from 'firebase/firestore';
 export const AuthContext = createContext();
 
 
@@ -23,17 +21,43 @@ const [loading,setLoading] = useState('')
 const auth = getAuth(app)
 
 // new user create 
-const newUser = (email,password)=>{
-    createUserWithEmailAndPassword(auth, email, password)
-    .then((result) => {
-      const user = result.user;
-      setUser(user)
-    })
-    .catch((error) => {
-     const errorMessage = error.message;
-     setError(errorMessage)
-      });
-} 
+// const newUser = (email,password)=>{
+//     createUserWithEmailAndPassword(auth, email, password)
+//     .then((result) => {
+//       const user = result.user;
+//       setUser(user)
+//     })
+//     .catch((error) => {
+//      const errorMessage = error.message;
+//      setError(errorMessage)
+//       });
+// } 
+
+
+
+const newUser= async(email,password,name) =>{
+  createUserWithEmailAndPassword(auth,email,password).then(
+    async(result)=>{
+      // const user = result.user;
+      //       updateProfile(auth.currentUser, {
+      //        displayName:name
+      //       }
+      //       )
+      console.log(result)
+      try{
+        const docRef = await addDoc(collection(db,'user'),{
+          // name,
+          email,
+          userId: `${result.user.uid}`
+        });
+        alert("welcome new user create successfully")
+        console.log("Document written with ID: " ,docRef.id);
+      }catch(error){
+console.error("Error adding document:", error);
+      }
+    }
+  )
+}
 const login =(email,password) =>{
   signInWithEmailAndPassword(auth, email, password)
   .then((result) => {
